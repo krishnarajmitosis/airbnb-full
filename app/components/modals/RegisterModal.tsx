@@ -1,20 +1,22 @@
 "use client";
 
+import useLoginModal from "@/app/hooks/useLoginModal";
+import useRegisterModal from "@/app/hooks/useRegisterModal";
 import axios from "axios";
-import { AiFillGithub } from "react-icons/ai";
-import { FcGoogle } from "react-icons/fc";
+import { signIn } from "next-auth/react";
 import { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import useRegisterModal from "@/app/hooks/useRegisterModal";
-import Modal from "./Modal";
+import { toast } from "react-hot-toast";
+import { AiFillGithub } from "react-icons/ai";
+import { FcGoogle } from "react-icons/fc";
+import Button from "../Button";
 import Heading from "../Heading";
 import Input from "../inputs/Input";
-import { toast } from "react-hot-toast";
-import Button from "../Button";
-import { signIn } from "next-auth/react";
+import Modal from "./Modal";
 
 const RegisterModel = () => {
   const registerModel = useRegisterModal();
+  const loginModel = useLoginModal();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -44,6 +46,11 @@ const RegisterModel = () => {
         setIsLoading(false);
       });
   };
+
+  const toggle = useCallback(() => {
+    registerModel.onClose();
+    loginModel.onOpen();
+  }, [loginModel, registerModel]);
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
@@ -99,7 +106,7 @@ const RegisterModel = () => {
           <div>Already have an account?</div>
         </div>
         <div
-          onClick={registerModel.onClose}
+          onClick={toggle}
           className="text-neutral-800 cursor-pointer hover:underline "
         >
           <div>Log in</div>

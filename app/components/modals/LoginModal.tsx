@@ -17,8 +17,10 @@ import { useRouter } from "next/navigation";
 
 const LoginModel = () => {
   const router = useRouter();
+
   const registerModel = useRegisterModal();
   const loginModel = useLoginModal();
+
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -35,23 +37,26 @@ const LoginModel = () => {
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
 
-    signIn('credentials', {
+    signIn("credentials", {
       ...data,
-      redirect: false
-    })
-    .then((callback) => {
-      if(callback?.ok){
+      redirect: false,
+    }).then((callback) => {
+      if (callback?.ok) {
         toast.success("Logged in");
         router.refresh();
         loginModel.onClose();
       }
 
-      if(callback?.error){
+      if (callback?.error) {
         toast.success(callback.error);
       }
-    })
+    });
   };
 
+  const toggle = useCallback(() => {
+    loginModel.onClose();
+    registerModel.onOpen();
+  }, [loginModel, registerModel]);
   const bodyContent = (
     <div className="flex flex-col gap-4">
       <Heading title="Welcome back" subtitle="Login to your account" />
@@ -88,20 +93,20 @@ const LoginModel = () => {
         outline
         label="Continue with Github"
         icon={AiFillGithub}
-        onClick={() => signIn('github')}
+        onClick={() => signIn("github")}
       />
       <div
         className="
       text-neutral-500 text-center mt-4 font-light"
       >
         <div className="justify-center flex flex-row items-center gap-2">
-          <div>Already have an account?</div>
+          <div>First time using Airbnb?</div>
         </div>
         <div
-          onClick={registerModel.onClose}
+          onClick={toggle}
           className="text-neutral-800 cursor-pointer hover:underline "
         >
-          <div>Log in</div>
+          <div>Create an account</div>
         </div>
       </div>
     </div>
